@@ -41,12 +41,27 @@ Your structure should look like:
 2. **Update the database password** to your new secure password
 3. Verify database credentials are correct
 
-### 5. Set Permissions
+### 5. Set Permissions (CRITICAL - This fixes the 403 error!)
+Using cPanel File Manager:
+1. Navigate to `/public_html/new/`
+2. Right-click on `.htaccess` → **Change Permissions**
+3. Set to **644** (Owner: Read+Write, Group: Read, World: Read)
+4. Do the same for:
+   - `api/config.php` → 644
+   - `api/contact.php` → 644
+
+Or via SSH:
 ```bash
+cd /public_html/new/
+chmod 644 .htaccess
 chmod 644 api/config.php
 chmod 644 api/contact.php
-chmod 644 .htaccess
 ```
+
+**If .htaccess is still not working:**
+- Make sure the filename is exactly `.htaccess` (with the dot at the start)
+- Enable "Show Hidden Files" in cPanel File Manager to see it
+- If you uploaded via FTP, re-upload in ASCII mode (not binary)
 
 ### 6. Test the Contact Form
 1. Visit: `http://nusealwaterproofing.co.za/new`
@@ -66,8 +81,22 @@ chmod 644 .htaccess
 - Ensure database user has privileges on the database
 - Check if MySQL service is running
 
+### 403 Forbidden / htaccess error?
+**"Server unable to read htaccess file"** means wrong permissions:
+1. In cPanel File Manager, go to `/public_html/new/`
+2. Click "Settings" (top right) → Check "Show Hidden Files"
+3. Find `.htaccess` file (should be visible now)
+4. Right-click → Change Permissions → Set to **644**
+5. Refresh your website
+
+**Still not working?**
+- Ensure mod_rewrite is enabled (ask your hosting provider)
+- Check if `.htaccess` is in the correct location: `/public_html/new/.htaccess`
+- Try renaming it to `htaccess.txt`, then back to `.htaccess`
+
 ### 404 on page reload?
-- Verify `.htaccess` file is uploaded
+- First fix the 403 error above
+- Verify `.htaccess` file is uploaded and has 644 permissions
 - Check if mod_rewrite is enabled in cPanel
 
 ### Email notifications not working?
