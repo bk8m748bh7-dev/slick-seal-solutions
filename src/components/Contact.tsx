@@ -14,14 +14,45 @@ const Contact = () => {
     phone: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Message Sent!",
-      description: "We'll get back to you within 24 hours.",
-    });
-    setFormData({ name: "", email: "", phone: "", message: "" });
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: "Message Sent!",
+          description: data.message,
+        });
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        toast({
+          title: "Error",
+          description: data.message || "Failed to send message. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please check your connection.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -168,9 +199,10 @@ const Contact = () => {
               <Button
                 type="submit"
                 size="lg"
+                disabled={isSubmitting}
                 className="w-full bg-accent hover:bg-accent/90 h-14 text-lg"
               >
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </Card>
