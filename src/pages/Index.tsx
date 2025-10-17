@@ -6,10 +6,12 @@ import Process from "@/components/Process";
 import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import CursorFollower from "@/components/CursorFollower";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <CursorFollower />
       <Navigation />
       <Hero />
       <About />
