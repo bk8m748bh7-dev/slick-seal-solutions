@@ -5,14 +5,57 @@
 
 ## Step-by-Step Deployment
 
-### 1. Build the Project
-```bash
-npm install
-npm run build
-```
-This creates a `dist` folder with your production files.
+### 1. Get Your Code
+First, download your project code from Lovable:
+1. Click the **GitHub** icon in the top right of Lovable
+2. Transfer your code to GitHub (if not already done)
+3. Download the repository as a ZIP file from GitHub
+4. Extract the ZIP file on your computer
 
-### 2. Upload to cPanel
+**OR** if you already have the code, skip to building.
+
+### 2. Build the Project
+
+#### Option A: Build on Your Computer (Recommended)
+**Requirements:** Node.js 18+ installed on your computer
+
+1. Open Terminal (Mac/Linux) or Command Prompt (Windows)
+2. Navigate to your project folder:
+   ```bash
+   cd path/to/your/project
+   ```
+3. Install dependencies and build:
+   ```bash
+   npm install
+   npm run build
+   ```
+4. A `dist` folder will be created with your production files
+
+#### Option B: Build via cPanel SSH Terminal
+**Requirements:** SSH access enabled on your cPanel account
+
+1. In cPanel, open **Terminal** (under "Advanced" section)
+2. Navigate to a temporary directory:
+   ```bash
+   cd ~/tmp
+   ```
+3. Upload your project ZIP file to cPanel File Manager (`~/tmp/`)
+4. Unzip and build:
+   ```bash
+   unzip project.zip
+   cd project-folder
+   npm install
+   npm run build
+   ```
+5. The `dist` folder is now ready to copy to `/public_html/new/`
+
+#### Option C: Request Built Files
+If you cannot build locally and don't have SSH access:
+1. Ask your developer or someone with Node.js to build for you
+2. They need to send you the `dist` folder contents only
+3. Upload those files directly to `/public_html/new/`
+
+### 3. Upload to cPanel
 - Upload everything from the `dist` folder to `/public_html/new/`
 - Upload the `public/api/` folder to `/public_html/new/api/`
 - Upload `public/.htaccess` to `/public_html/new/.htaccess`
@@ -29,19 +72,19 @@ Your structure should look like:
 └── .htaccess
 ```
 
-### 3. Setup Database
+### 4. Setup Database
 1. Open **cPanel → phpMyAdmin**
 2. Select database: `nusealwaterproof_new`
 3. Click **SQL** tab
 4. Copy contents from `api/setup.sql` and execute
 5. Verify the `contact_submissions` table was created
 
-### 4. Configure PHP Files
+### 5. Configure PHP Files
 1. Navigate to `/public_html/new/api/config.php`
 2. **Update the database password** to your new secure password
 3. Verify database credentials are correct
 
-### 5. Set Permissions (CRITICAL - This fixes the 403 error!)
+### 6. Set Permissions (CRITICAL - This fixes the 403 error!)
 Using cPanel File Manager:
 1. Navigate to `/public_html/new/`
 2. Right-click on `.htaccess` → **Change Permissions**
@@ -63,7 +106,7 @@ chmod 644 api/contact.php
 - Enable "Show Hidden Files" in cPanel File Manager to see it
 - If you uploaded via FTP, re-upload in ASCII mode (not binary)
 
-### 6. Test the Contact Form
+### 7. Test the Contact Form
 1. Visit: `http://nusealwaterproofing.co.za/new`
 2. Scroll to contact section
 3. Fill out and submit the form
