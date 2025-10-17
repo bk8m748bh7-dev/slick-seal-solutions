@@ -59,8 +59,8 @@ const Contact = () => {
     {
       icon: Phone,
       title: "Phone",
-      content: "+27 (0) 11 234 5678",
-      link: "tel:+27112345678",
+      content: "+27 69 278 8994",
+      link: "tel:+27692788994",
     },
     {
       icon: Mail,
@@ -126,7 +126,7 @@ const Contact = () => {
                 Available 24/7 for urgent waterproofing issues
               </p>
               <a
-                href="tel:+27112345678"
+                href="tel:+27692788994"
                 className="inline-block w-full text-center bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-3 rounded-lg transition-colors"
               >
                 Call Emergency Line
