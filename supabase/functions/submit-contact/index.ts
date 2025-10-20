@@ -103,7 +103,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "NuSeal Contact Form <onboarding@resend.dev>",
       replyTo: email,
-      to: ["marcus@kdpog.co.za"],
+      to: ["info@nusealwaterproofing.co.za"],
       subject: `NuSeal Contact Form: New Inquiry from ${name}`,
       html: `
         <h2>New Contact Form Submission</h2>
