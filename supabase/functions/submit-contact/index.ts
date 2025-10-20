@@ -98,8 +98,10 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Saved to database successfully");
 
     // Send email notification
+    console.log("Attempting to send email to info@nusealwaterproofing.co.za");
+    
     const emailResponse = await resend.emails.send({
-      from: "NuSeal Contact Form <onboarding@resend.dev>",
+      from: "NuSeal Contact Form <noreply@nusealwaterproofing.co.za>",
       to: ["info@nusealwaterproofing.co.za"],
       subject: `New Contact Form Submission from ${name}`,
       html: `
@@ -113,6 +115,11 @@ const handler = async (req: Request): Promise<Response> => {
         <p><em>Submitted at: ${new Date().toLocaleString()}</em></p>
       `,
     });
+
+    if (emailResponse.error) {
+      console.error("Resend email error:", emailResponse.error);
+      throw new Error(`Failed to send email: ${emailResponse.error.message}`);
+    }
 
     console.log("Email sent successfully:", emailResponse);
 
