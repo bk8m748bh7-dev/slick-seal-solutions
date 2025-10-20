@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +6,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Contact = () => {
   const { toast } = useToast();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,8 +24,19 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
+      // Get reCAPTCHA token
+      const recaptchaToken = await recaptchaRef.current?.executeAsync();
+      recaptchaRef.current?.reset();
+
+      if (!recaptchaToken) {
+        throw new Error("reCAPTCHA verification failed. Please try again.");
+      }
+
       const { data, error } = await supabase.functions.invoke('submit-contact', {
-        body: formData,
+        body: {
+          ...formData,
+          recaptchaToken,
+        },
       });
 
       if (error) throw error;
@@ -188,6 +201,12 @@ const Contact = () => {
                   className="min-h-[150px] resize-none"
                 />
               </div>
+
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                size="invisible"
+                sitekey="6Lfb8_ArAAAAAMXjLEZ8sbvhILtiUp1cq1r2teRr"
+              />
 
               <Button
                 type="submit"

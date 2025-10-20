@@ -15,6 +15,7 @@ interface ContactRequest {
   email: string;
   phone: string;
   message: string;
+  recaptchaToken: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -23,12 +24,12 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, phone, message }: ContactRequest = await req.json();
+    const { name, email, phone, message, recaptchaToken }: ContactRequest = await req.json();
 
     console.log("Received contact form submission:", { name, email, phone });
 
     // Validate inputs
-    if (!name || !email || !phone || !message) {
+    if (!name || !email || !phone || !message || !recaptchaToken) {
       return new Response(
         JSON.stringify({ error: "All fields are required" }),
         {
@@ -37,6 +38,28 @@ const handler = async (req: Request): Promise<Response> => {
         }
       );
     }
+
+    // Verify reCAPTCHA
+    const recaptchaSecret = Deno.env.get("RECAPTCHA_SECRET_KEY");
+    const recaptchaResponse = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${recaptchaToken}`,
+      { method: "POST" }
+    );
+    
+    const recaptchaData = await recaptchaResponse.json();
+    
+    if (!recaptchaData.success || recaptchaData.score < 0.5) {
+      console.error("reCAPTCHA verification failed:", recaptchaData);
+      return new Response(
+        JSON.stringify({ error: "reCAPTCHA verification failed. Please try again." }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    console.log("reCAPTCHA verified successfully, score:", recaptchaData.score);
 
     // Initialize Supabase client
     const supabase = createClient(
