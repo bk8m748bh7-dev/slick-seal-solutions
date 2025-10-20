@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -21,33 +22,25 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/contact.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const { data, error } = await supabase.functions.invoke('submit-contact', {
+        body: formData,
       });
 
-      const data = await response.json();
+      if (error) throw error;
 
-      if (data.success) {
-        toast({
-          title: "Message Sent!",
-          description: data.message,
-        });
-        setFormData({ name: "", email: "", phone: "", message: "" });
-      } else {
-        toast({
-          title: "Error",
-          description: data.message || "Failed to send message. Please try again.",
-          variant: "destructive",
-        });
+      if (data?.error) {
+        throw new Error(data.error);
       }
+
+      toast({
+        title: "Message Sent!",
+        description: data.message || "We'll get back to you soon.",
+      });
+      setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to send message. Please check your connection.",
+        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
         variant: "destructive",
       });
     } finally {
