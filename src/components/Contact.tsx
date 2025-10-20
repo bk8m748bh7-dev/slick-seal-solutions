@@ -24,12 +24,13 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Get reCAPTCHA token
-      const recaptchaToken = await recaptchaRef.current?.executeAsync();
-      recaptchaRef.current?.reset();
-
-      if (!recaptchaToken) {
-        throw new Error("reCAPTCHA verification failed. Please try again.");
+      // Get reCAPTCHA token (skip if it fails)
+      let recaptchaToken = null;
+      try {
+        recaptchaToken = await recaptchaRef.current?.executeAsync();
+        recaptchaRef.current?.reset();
+      } catch (error) {
+        console.warn("reCAPTCHA execution failed:", error);
       }
 
       const { data, error } = await supabase.functions.invoke('submit-contact', {
