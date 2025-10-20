@@ -101,7 +101,8 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Attempting to send email to info@nusealwaterproofing.co.za");
     
     const emailResponse = await resend.emails.send({
-      from: "NuSeal Contact Form <noreply@nusealwaterproofing.co.za>",
+      from: "NuSeal Contact Form <onboarding@resend.dev>",
+      replyTo: "info@nusealwaterproofing.co.za",
       to: ["info@nusealwaterproofing.co.za"],
       subject: `New Contact Form Submission from ${name}`,
       html: `
