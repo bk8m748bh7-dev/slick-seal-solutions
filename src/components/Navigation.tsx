@@ -53,7 +53,7 @@ const Navigation = () => {
             <img 
               src={logo} 
               alt="NuSeal Waterproofing & Specialist Paint" 
-              className="h-16 md:h-20 w-auto rounded-xl"
+              className="h-12 md:h-20 w-auto rounded-xl"
             />
           </a>
 
