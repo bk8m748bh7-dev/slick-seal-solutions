@@ -97,23 +97,24 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Saved to database successfully");
 
-    // Send email notification
-    console.log("Attempting to send email to info@nusealwaterproofing.co.za");
+    // Send email notification to Resend account owner
+    console.log("Sending contact form notification");
     
     const emailResponse = await resend.emails.send({
       from: "NuSeal Contact Form <onboarding@resend.dev>",
-      replyTo: "info@nusealwaterproofing.co.za",
-      to: ["info@nusealwaterproofing.co.za"],
-      subject: `New Contact Form Submission from ${name}`,
+      replyTo: email,
+      to: ["marcus@kdpog.co.za"],
+      subject: `NuSeal Contact Form: New Inquiry from ${name}`,
       html: `
         <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Customer Name:</strong> ${name}</p>
+        <p><strong>Customer Email:</strong> <a href="mailto:${email}">${email}</a></p>
+        <p><strong>Customer Phone:</strong> <a href="tel:${phone}">${phone}</a></p>
         <p><strong>Message:</strong></p>
-        <p>${message}</p>
+        <p style="background: #f5f5f5; padding: 15px; border-radius: 5px;">${message}</p>
         <hr>
         <p><em>Submitted at: ${new Date().toLocaleString()}</em></p>
+        <p style="color: #666; font-size: 12px;">You can reply directly to this email to respond to the customer.</p>
       `,
     });
 
